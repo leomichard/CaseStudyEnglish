@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When the Camera Lies — The Ethics of Deepfake Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0D0F12;
+    --panel:#15181D;
+    --panel-2:#1B1F26;
+    --hair:#2A2E35;
+    --paper:#EDEBE6;
+    --muted:#9AA0AC;
+    --brass:#C9A227;
+    --brass-dim:#8A731F;
+    --glitch-red:#E64545;
+    --glitch-teal:#3FA7A0;
+    --serif: 'Fraunces', serif;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:var(--brass); text-decoration:none; border-bottom:1px solid var(--brass-dim);}
+  a:hover{border-bottom-color:var(--brass);}
+
+  .wrap{max-width:1040px; margin:0 auto; padding:0 28px;}
+  .col{max-width:640px;}
+
+  /* Masthead */
+  .masthead{
+    border-bottom:1px solid var(--hair);
+    padding:22px 0;
+  }
+  .masthead .wrap{display:flex; align-items:baseline; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  .masthead .kicker{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.04em;
+    color:var(--muted);
+  }
+  .masthead .mark{
+    font-family:var(--serif);
+    font-size:19px;
+    font-weight:500;
+    color:var(--paper);
+  }
+  .masthead .mark em{color:var(--brass); font-style:normal;}
+
+  /* Hero */
+  .hero{padding:88px 0 64px; border-bottom:1px solid var(--hair);}
+  .hero .kicker{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--brass);
+    letter-spacing:0.03em;
+    margin-bottom:22px;
+  }
+  h1.headline{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(40px, 6.4vw, 74px);
+    line-height:1.03;
+    margin:0 0 28px;
+    max-width:860px;
+    position:relative;
+    display:inline-block;
+  }
+  .glitch-span{position:relative; display:inline-block;}
+  .glitch-span::before,
+  .glitch-span::after{
+    content:attr(data-text);
+    position:absolute; left:0; top:0;
+    width:100%; overflow:hidden;
+    opacity:0;
+  }
+  .glitch-span::before{color:var(--glitch-red); animation:glitch-b 1.8s ease-out 0.15s 1;}
+  .glitch-span::after{color:var(--glitch-teal); animation:glitch-a 1.8s ease-out 0.15s 1;}
+  @keyframes glitch-a{
+    0%{opacity:0; transform:translate(0,0);}
+    8%{opacity:0.75; transform:translate(-3px,1px);}
+    16%{opacity:0.55; transform:translate(2px,-1px);}
+    24%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @keyframes glitch-b{
+    0%{opacity:0; transform:translate(0,0);}
+    10%{opacity:0.75; transform:translate(3px,-1px);}
+    18%{opacity:0.5; transform:translate(-2px,1px);}
+    26%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .glitch-span::before,.glitch-span::after{animation:none; display:none;}
+  }
+
+  .standfirst{
+    font-size:19px;
+    color:var(--muted);
+    max-width:600px;
+    margin:0 0 34px;
+    font-weight:400;
+  }
+  .byline{
+    display:flex; gap:28px; align-items:center; flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+    padding-top:22px;
+    border-top:1px solid var(--hair);
+  }
+  .byline strong{color:var(--paper); font-weight:500;}
+
+  /* Sections */
+  section.piece{
+    padding:64px 0;
+    border-bottom:1px solid var(--hair);
+  }
+  section.piece .wrap{display:flex; gap:56px; align-items:flex-start;}
+  .section-num{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--brass-dim);
+    width:64px;
+    flex-shrink:0;
+    padding-top:6px;
+  }
+  h2.section-title{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(26px, 3vw, 34px);
+    margin:0 0 20px;
+    line-height:1.15;
+  }
+  .piece p{
+    font-size:16.5px;
+    margin:0 0 18px;
+    color:#D8D5CE;
+  }
+  .piece p:last-child{margin-bottom:0;}
+  .lede{
+    font-size:19px !important;
+    color:var(--paper) !important;
+    font-family:var(--serif);
+    line-height:1.5;
+  }
+
+  /* Case dossier */
+  .dossier{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    margin-top:8px;
+    border-top:1px solid var(--hair);
+  }
+  .case{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    gap:24px;
+    padding:22px 0;
+    border-bottom:1px solid var(--hair);
+  }
+  .case .date{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--brass);
+    padding-top:2px;
+  }
+  .case h3{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:16px;
+    margin:0 0 8px;
+    color:var(--paper);
+  }
+  .case p{font-size:15px; color:var(--muted); margin:0;}
+
+  /* Embedded systems callout */
+  .callout{
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-left:3px solid var(--brass);
+    padding:30px 32px;
+    margin-top:8px;
+  }
+  .callout .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--brass);
+    margin-bottom:14px;
+  }
+  .callout p{color:#D8D5CE; font-size:16px; margin:0 0 14px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout ul{
+    margin:14px 0 0;
+    padding-left:20px;
+    color:#D8D5CE;
+    font-size:15.5px;
+  }
+  .callout li{margin-bottom:8px;}
+
+  /* Closing */
+  .closing{padding:64px 0 80px;}
+  .closing .wrap{max-width:640px; margin:0 auto; padding:0 28px; text-align:left;}
+  .closing h2{
+    font-family:var(--serif); font-weight:500; font-size:28px; margin:0 0 18px;
+  }
+  .closing p{color:#D8D5CE; font-size:16.5px;}
+
+  /* Footer / credits */
+  footer{
+    border-top:1px solid var(--hair);
+    padding:40px 0 48px;
+  }
+  footer .wrap{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;}
+  .credits .label{
+    font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-bottom:10px;
+  }
+  .credits .names{
+    font-family:var(--serif);
+    font-size:16px;
+    color:var(--paper);
+  }
+  .credits .names span{color:var(--muted); font-family:var(--sans); font-size:13px;}
+  footer .program{
+    font-family:var(--mono); font-size:11.5px; color:var(--muted); text-align:right;
+  }
+
+  @media (max-width: 720px){
+    section.piece .wrap{flex-direction:column; gap:14px;}
+    .section-num{width:auto;}
+    .case{grid-template-columns:1fr; gap:6px;}
+    footer .wrap{flex-direction:column; align-items:flex-start;}
+    footer .program{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wrap">
+    <div class="mark">Synthetic<em>&nbsp;Witness</em></div>
+    <div class="kicker">A report on deepfake technology and its ethics</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Digital media ethics</div>
+    <h1 class="headline">When the <span class="glitch-span" data-text="camera">camera</span> lies</h1>
+    <p class="standfirst">Generative AI can now clone a face, steal a voice, and fabricate a conversation that never happened. As deepfakes move from curiosity to infrastructure for fraud and disinformation, the ethical questions are no longer hypothetical.</p>
+    <div class="byline">
+      <span><strong>By</strong> Léo Michard, Hugo Deschamps, Lorenzo Sasia &amp; Tim Marsat</span>
+    </div>
+  </div>
+</header>
+
+<section class="piece">
+  <div class="wrap">
+    <div class="section-num">01</div>
+    <div class="col">
+      <h2 class="section-title">A technology that outran its guardrails</h2>
+      <p class="lede">Deepfakes are synthetic images, audio, or video generated by AI to convincingly depict people saying or doing things they never did.</p>
+      <p>What began as a novelty has become mainstream infrastructure for deception. The volume of deepfakes circulating online grew from roughly half a million in 2023 to close to eight million by 2025, an annual growth rate approaching 900%. Voice cloning in particular has crossed what researchers call an "indistinguishable threshold": a few seconds of audio is now enough to produce a synthetic voice with natural intonation, rhythm, and even breathing.</p>
+      <p>That accessibility is the ethical hinge of the whole debate. Deepfakes are no longer confined to nation-state actors or film studios — they are available to anyone with a laptop, which changes who can be harmed, and how often.</p>
+    </div>
+  </div>
+</section>
+
+<section class="piece">
+  <div class="wrap">
+    <div class="section-num">02</div>
+    <div class="col">
+      <h2 class="section-title">Consent and the theft of likeness</h2>
+      <p>The most direct ethical harm is the simplest one: using someone's face or voice without their consent. In early 2026, the AI chatbot Grok drew global legal scrutiny after users exploited its permissive image tools to mass-produce sexualised, non-consensual deepfakes of real people, including public figures. The volume overwhelmed the platform's own moderation systems before regulators intervened.</p>
+      <p>Public figures face a related but distinct problem: identity used not for humiliation but for profit. A fabricated advertisement circulated widely showing India's finance minister, Nirmala Sitharaman, apparently endorsing a fraudulent investment scheme — a reminder that a person's likeness can be conscripted into a scam without their knowledge, at a scale no individual can monitor.</p>
+    </div>
+  </div>
+</section>
+
+<section class="piece">
+  <div class="wrap">
+    <div class="section-num">03</div>
+    <div class="col">
+      <h2 class="section-title">Truth, elections, and the erosion of shared reality</h2>
+      <p>Deepfakes don't only misrepresent individuals — they can distort the information environment an entire electorate relies on. During recent Indian election cycles, fabricated video clips of major party leaders, including Narendra Modi and Rahul Gandhi, spread widely across WhatsApp and YouTube, used as a deliberate tool for narrative control rather than isolated pranks.</p>
+      <p>The deeper cost isn't any single fake clip — it's what researchers call the "liar's dividend": once convincing fabrication is common knowledge, real footage becomes deniable too. Genuine evidence can be dismissed as "probably AI," which corrodes public trust in media generally, not just in the fakes themselves.</p>
+    </div>
+  </div>
+</section>
+
+<section class="piece">
+  <div class="wrap">
+    <div class="section-num">04</div>
+    <div class="col">
+      <h2 class="section-title">Institutions are already paying for it</h2>
+      <p>Deepfake fraud has moved from theoretical risk to a documented, multi-billion-dollar problem. A 2026 industry study estimated global losses from deepfake-enabled fraud at roughly $3.7 billion since 2020, with the overwhelming majority of that damage recorded in 2025 and the first half of 2026 alone — and because only publicly reported cases are counted, the true figure is almost certainly higher.</p>
+      <div class="dossier">
+        <div class="case">
+          <div class="date">Feb 2024</div>
+          <div>
+            <h3>A $25 million video call</h3>
+            <p>A finance employee at the Hong Kong office of UK engineering firm Arup joined what looked like a routine video call with the company's CFO and colleagues. Every face on the call was a deepfake. The employee, convinced, authorised the transfer.</p>
+          </div>
+        </div>
+        <div class="case">
+          <div class="date">May 2024</div>
+          <div>
+            <h3>The impersonation that almost worked</h3>
+            <p>Scammers built a fake WhatsApp account using a public photo of WPP CEO Mark Read, then used a voice clone on a Teams call to impersonate him. Staff grew suspicious and asked a question the impersonator couldn't answer — the fraud collapsed before any money moved.</p>
+          </div>
+        </div>
+        <div class="case">
+          <div class="date">2025</div>
+          <div>
+            <h3>A $15 identity, verified</h3>
+            <p>Investigators found that a service called OnlyFake could generate a synthetic passport realistic enough to pass the automated identity checks used by a major cryptocurrency exchange — for the price of a takeaway meal.</p>
+          </div>
+        </div>
+        <div class="case">
+          <div class="date">2025</div>
+          <div>
+            <h3>Government impersonation, scaled</h3>
+            <p>Chainalysis reported that crypto scams using deepfaked images of government officials grew by more than 1,400% year over year, as fraud operations industrialised the same techniques used in one-off attacks.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="piece">
+  <div class="wrap">
+    <div class="section-num">05</div>
+    <div class="col">
+      <h2 class="section-title">Where embedded systems come in</h2>
+      <div class="callout">
+        <div class="eyebrow">The hardware side of the problem</div>
+        <p>Most of the deepfake debate happens at the software layer — the models that generate fakes and the algorithms trained to catch them. But as this report's authors, all studying embedded systems, we see the other half of the fight: the software fixes above only work if the raw signal they start from was trustworthy in the first place, which is a hardware question.</p>
+        <ul>
+          <li><strong>Provenance at capture.</strong> Cryptographically signing a photo or video the instant a sensor captures it — the approach behind standards like C2PA Content Credentials — requires a secure element embedded in the camera itself, not a setting a user can toggle in software.</li>
+          <li><strong>Liveness detection.</strong> Distinguishing a real face from a screen or a mask increasingly relies on dedicated hardware — depth sensors, infrared emitters, time-of-flight cameras — because a software-only check on a 2D image is comparatively easy to spoof.</li>
+          <li><strong>On-device detection.</strong> Running deepfake-detection inference on a local edge-AI chip, rather than in the cloud, means a video call or a live broadcast can be flagged in real time, without waiting on a network round trip an attacker could also intercept.</li>
+          <li><strong>Roots of trust.</strong> Secure enclaves and trusted platform modules anchor the whole provenance chain — if the chip itself can be compromised, no signature it produces can be trusted either.</li>
+        </ul>
+        <p>Put simply: detecting deepfakes is a machine-learning problem, but proving a piece of media was never fake in the first place is an embedded-systems problem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <h2>No single fix</h2>
+    <p>None of the cases above were stopped by one clever piece of technology. The WPP attempt was caught by a human asking an unscriptable question. The Arup fraud wasn't. The gap between those two outcomes is where the real ethical work sits: better provenance standards, hardware that can't be talked out of the truth, regulation that keeps pace with a $3.7 billion problem, and a public that's taught to expect that seeing is no longer sufficient for believing.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="credits">
+      <div class="label">Written by</div>
+      <div class="names">Léo Michard · Hugo Deschamps · Lorenzo Sasia · Tim Marsat</div>
+    </div>
+    <div class="program">Embedded systems programme<br>Digital media ethics report</div>
+  </div>
+</footer>
+
+</body>
+</html>
