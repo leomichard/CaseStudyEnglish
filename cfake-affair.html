@@ -1,218 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The CFake Affair — Synthetic Witness</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#0D0F12;
-    --panel:#15181D;
-    --panel-2:#1B1F26;
-    --hair:#2A2E35;
-    --paper:#EDEBE6;
-    --muted:#9AA0AC;
-    --brass:#C9A227;
-    --brass-dim:#8A731F;
-    --serif: 'Fraunces', serif;
-    --sans: 'IBM Plex Sans', sans-serif;
-    --mono: 'IBM Plex Mono', monospace;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; background:var(--ink); color:var(--paper);
-    font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased;
-  }
-  a{color:var(--brass); text-decoration:none; border-bottom:1px solid var(--brass-dim);}
-  a:hover{border-bottom-color:var(--brass);}
-  .wrap{max-width:1040px; margin:0 auto; padding:0 28px;}
-  .col{max-width:640px;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The CFake Affair — Synthetic Witness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+          rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0D0F12;
+            --panel: #15181D;
+            --panel-2: #1B1F26;
+            --hair: #2A2E35;
+            --paper: #EDEBE6;
+            --muted: #9AA0AC;
+            --brass: #C9A227;
+            --brass-dim: #8A731F;
+            --serif: 'Fraunces', serif;
+            --sans: 'IBM Plex Sans', sans-serif;
+            --mono: 'IBM Plex Mono', monospace;
+        }
 
-  .masthead{border-bottom:1px solid var(--hair); padding:22px 0;}
-  .masthead .wrap{display:flex; align-items:baseline; justify-content:space-between; gap:20px; flex-wrap:wrap;}
-  .masthead .mark{font-family:var(--serif); font-size:19px; font-weight:500; color:var(--paper);}
-  .masthead .mark em{color:var(--brass); font-style:normal;}
-  .masthead .back{font-family:var(--mono); font-size:12.5px; color:var(--muted); border-bottom:none;}
-  .masthead .back:hover{color:var(--brass);}
+        * {
+            box-sizing: border-box;
+        }
 
-  .hero{padding:76px 0 56px; border-bottom:1px solid var(--hair);}
-  .hero .kicker{font-family:var(--mono); font-size:12.5px; color:var(--brass); letter-spacing:0.03em; margin-bottom:22px;}
-  h1.headline{
-    font-family:var(--serif); font-weight:500;
-    font-size:clamp(36px, 5.6vw, 62px); line-height:1.06;
-    margin:0 0 24px; max-width:820px;
-  }
-  .standfirst{font-size:18.5px; color:var(--muted); max-width:600px; margin:0 0 30px;}
-  .byline{
-    display:flex; gap:28px; align-items:center; flex-wrap:wrap;
-    font-family:var(--mono); font-size:12.5px; color:var(--muted);
-    padding-top:20px; border-top:1px solid var(--hair);
-  }
-  .byline strong{color:var(--paper); font-weight:500;}
+        body {
+            margin: 0;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--sans);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
 
-  section.piece{padding:56px 0; border-bottom:1px solid var(--hair);}
-  section.piece .wrap{display:flex; gap:56px; align-items:flex-start;}
-  .section-num{font-family:var(--mono); font-size:12.5px; color:var(--brass-dim); width:64px; flex-shrink:0; padding-top:6px;}
-  h2.section-title{font-family:var(--serif); font-weight:500; font-size:clamp(24px, 2.8vw, 30px); margin:0 0 20px; line-height:1.15;}
-  .piece p{font-size:16.5px; margin:0 0 18px; color:#D8D5CE;}
-  .piece p:last-child{margin-bottom:0;}
+        a {
+            color: var(--brass);
+            text-decoration: none;
+            border-bottom: 1px solid var(--brass-dim);
+        }
 
-  .stat-grid{
-    display:grid; grid-template-columns:repeat(2,1fr); gap:1px;
-    background:var(--hair); border:1px solid var(--hair); margin:24px 0 6px;
-  }
-  .stat{background:var(--panel); padding:20px 22px;}
-  .stat .num{font-family:var(--serif); font-size:26px; color:var(--brass); margin-bottom:4px;}
-  .stat .label{font-family:var(--mono); font-size:12px; color:var(--muted);}
+        a:hover {
+            border-bottom-color: var(--brass);
+        }
 
-  .names-list{font-size:15.5px; color:var(--muted); margin:6px 0 0;}
-  .names-list strong{color:var(--paper); font-weight:500;}
+        .wrap {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 28px;
+        }
 
-  .dossier{display:flex; flex-direction:column; margin-top:8px; border-top:1px solid var(--hair);}
-  .case{display:grid; grid-template-columns:110px 1fr; gap:24px; padding:22px 0; border-bottom:1px solid var(--hair);}
-  .case .date{font-family:var(--mono); font-size:13px; color:var(--brass); padding-top:2px;}
-  .case h3{font-family:var(--sans); font-weight:600; font-size:16px; margin:0 0 8px; color:var(--paper);}
-  .case p{font-size:15px; color:var(--muted); margin:0;}
+        .col {
+            max-width: 640px;
+        }
 
-  .callout{
-    background:var(--panel); border:1px solid var(--hair); border-left:3px solid var(--brass);
-    padding:28px 30px; margin-top:8px;
-  }
-  .callout .eyebrow{font-family:var(--mono); font-size:12px; color:var(--brass); margin-bottom:14px;}
-  .callout p{color:#D8D5CE; font-size:15.5px; margin:0 0 14px;}
-  .callout p:last-child{margin-bottom:0;}
+        .masthead {
+            border-bottom: 1px solid var(--hair);
+            padding: 22px 0;
+        }
 
-  .closing{padding:56px 0 76px;}
-  .closing .wrap{max-width:640px; margin:0 auto; padding:0 28px;}
-  .closing h2{font-family:var(--serif); font-weight:500; font-size:26px; margin:0 0 18px;}
-  .closing p{color:#D8D5CE; font-size:16.5px;}
+        .masthead .wrap {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
 
-  footer{border-top:1px solid var(--hair); padding:36px 0 44px;}
-  footer .wrap{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px;}
-  .credits .label{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-bottom:10px;}
-  .credits .names{font-family:var(--serif); font-size:16px; color:var(--paper);}
-  footer .program{font-family:var(--mono); font-size:11.5px; color:var(--muted); text-align:right;}
+        .masthead .mark {
+            font-family: var(--serif);
+            font-size: 19px;
+            font-weight: 500;
+            color: var(--paper);
+        }
 
-  @media (max-width: 720px){
-    section.piece .wrap{flex-direction:column; gap:14px;}
-    .section-num{width:auto;}
-    .case{grid-template-columns:1fr; gap:6px;}
-    .stat-grid{grid-template-columns:1fr;}
-    footer .wrap{flex-direction:column; align-items:flex-start;}
-    footer .program{text-align:left;}
-  }
-</style>
+        .masthead .mark em {
+            color: var(--brass);
+            font-style: normal;
+        }
+
+        .masthead .back {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--muted);
+            border-bottom: none;
+        }
+
+        .masthead .back:hover {
+            color: var(--brass);
+        }
+
+        .hero {
+            padding: 76px 0 56px;
+            border-bottom: 1px solid var(--hair);
+        }
+
+        .hero .kicker {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--brass);
+            letter-spacing: 0.03em;
+            margin-bottom: 22px;
+        }
+
+        h1.headline {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: clamp(36px, 5.6vw, 62px);
+            line-height: 1.06;
+            margin: 0 0 24px;
+            max-width: 820px;
+        }
+
+        .standfirst {
+            font-size: 18.5px;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 0 30px;
+        }
+
+        .byline {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            flex-wrap: wrap;
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--muted);
+            padding-top: 20px;
+            border-top: 1px solid var(--hair);
+        }
+
+        .byline strong {
+            color: var(--paper);
+            font-weight: 500;
+        }
+
+        section.piece {
+            padding: 56px 0;
+            border-bottom: 1px solid var(--hair);
+        }
+
+        section.piece .wrap {
+            display: flex;
+            gap: 56px;
+            align-items: flex-start;
+        }
+
+        .section-num {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--brass-dim);
+            width: 64px;
+            flex-shrink: 0;
+            padding-top: 6px;
+        }
+
+        h2.section-title {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: clamp(24px, 2.8vw, 30px);
+            margin: 0 0 20px;
+            line-height: 1.15;
+        }
+
+        .piece p {
+            font-size: 16.5px;
+            margin: 0 0 18px;
+            color: #D8D5CE;
+        }
+
+        .piece p:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns:repeat(2, 1fr);
+            gap: 1px;
+            background: var(--hair);
+            border: 1px solid var(--hair);
+            margin: 24px 0 6px;
+        }
+
+        .stat {
+            background: var(--panel);
+            padding: 20px 22px;
+        }
+
+        .stat .num {
+            font-family: var(--serif);
+            font-size: 26px;
+            color: var(--brass);
+            margin-bottom: 4px;
+        }
+
+        .stat .label {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .names-list {
+            font-size: 15.5px;
+            color: var(--muted);
+            margin: 6px 0 0;
+        }
+
+        .names-list strong {
+            color: var(--paper);
+            font-weight: 500;
+        }
+
+        .dossier {
+            display: flex;
+            flex-direction: column;
+            margin-top: 8px;
+            border-top: 1px solid var(--hair);
+        }
+
+        .case {
+            display: grid;
+            grid-template-columns:110px 1fr;
+            gap: 24px;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--hair);
+        }
+
+        .case .date {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--brass);
+            padding-top: 2px;
+        }
+
+        .case h3 {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0 0 8px;
+            color: var(--paper);
+        }
+
+        .case p {
+            font-size: 15px;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .callout {
+            background: var(--panel);
+            border: 1px solid var(--hair);
+            border-left: 3px solid var(--brass);
+            padding: 28px 30px;
+            margin-top: 8px;
+        }
+
+        .callout .eyebrow {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--brass);
+            margin-bottom: 14px;
+        }
+
+        .callout p {
+            color: #D8D5CE;
+            font-size: 15.5px;
+            margin: 0 0 14px;
+        }
+
+        .callout p:last-child {
+            margin-bottom: 0;
+        }
+
+        .closing {
+            padding: 56px 0 76px;
+        }
+
+        .closing .wrap {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 0 28px;
+        }
+
+        .closing h2 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 26px;
+            margin: 0 0 18px;
+        }
+
+        .closing p {
+            color: #D8D5CE;
+            font-size: 16.5px;
+        }
+
+        footer {
+            border-top: 1px solid var(--hair);
+            padding: 36px 0 44px;
+        }
+
+        footer .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .credits .label {
+            font-family: var(--mono);
+            font-size: 11.5px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .credits .names {
+            font-family: var(--serif);
+            font-size: 16px;
+            color: var(--paper);
+        }
+
+        footer .program {
+            font-family: var(--mono);
+            font-size: 11.5px;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        @media (max-width: 720px) {
+            section.piece .wrap {
+                flex-direction: column;
+                gap: 14px;
+            }
+
+            .section-num {
+                width: auto;
+            }
+
+            .case {
+                grid-template-columns:1fr;
+                gap: 6px;
+            }
+
+            .stat-grid {
+                grid-template-columns:1fr;
+            }
+
+            footer .wrap {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            footer .program {
+                text-align: left;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="masthead">
-  <div class="wrap">
-    <div class="mark">Synthetic<em>&nbsp;Witness</em></div>
-    <a class="back" href="index.html">&larr; Back to the main report</a>
-  </div>
+    <div class="wrap">
+        <div class="mark">Synthetic<em>&nbsp;Witness</em></div>
+        <a class="back" href="index.html">&larr; Back to the main report</a>
+    </div>
 </div>
 
 <header class="hero">
-  <div class="wrap">
-    <div class="kicker">Case study — France, 2026</div>
-    <h1 class="headline">The CFake affair</h1>
-    <p class="standfirst">A Nice-based IT worker quietly ran one of France's largest non-consensual deepfake pornography sites for nearly two decades. It took a tip from American investigators, 14,000 victims, and two of France's newest criminal statutes to bring it to a Paris courtroom.</p>
-    <div class="byline">
-      <span><strong>By</strong> Léo Michard, Hugo Deschamps, Lorenzo Sasia &amp; Tim Marsat</span>
+    <div class="wrap">
+        <div class="kicker">Case study — France, 2026</div>
+        <h1 class="headline">The CFake affair</h1>
+        <p class="standfirst">A Nice-based IT worker quietly ran one of France's largest non-consensual deepfake
+            pornography sites for nearly two decades. It took a tip from American investigators, 14,000 victims, and two
+            of France's newest criminal statutes to bring it to a Paris courtroom.</p>
+        <div class="byline">
+            <span><strong>By</strong> Léo Michard, Hugo Deschamps, Lorenzo Sasia &amp; Tim Marsat</span>
+        </div>
     </div>
-  </div>
 </header>
 
 <section class="piece">
-  <div class="wrap">
-    <div class="section-num">01</div>
-    <div class="col">
-      <h2 class="section-title">The site</h2>
-      <p>CFake was created in 2007 by a 47-year-old computer scientist from Nice, who ran it largely unnoticed for almost twenty years. By the time investigators shut it down, the platform hosted close to 300,000 doctored images and around 7,000 deepfake videos, with roughly 50 new uploads added every day.</p>
-      <div class="stat-grid">
-        <div class="stat"><div class="num">~300,000</div><div class="label">images and montages hosted</div></div>
-        <div class="stat"><div class="num">~7,000</div><div class="label">deepfake videos</div></div>
-        <div class="stat"><div class="num">200,000</div><div class="label">registered user accounts</div></div>
-        <div class="stat"><div class="num">~4 million</div><div class="label">visits per month</div></div>
-      </div>
-      <p>The site was funded through advertising. When police searched the administrator's home in Nice, they seized 34.7 ETH — around €48,521 at the time — traced directly to that ad revenue.</p>
-    </div>
-  </div>
-</section>
-
-<section class="piece">
-  <div class="wrap">
-    <div class="section-num">02</div>
-    <div class="col">
-      <h2 class="section-title">The victims</h2>
-      <p>Investigators identified roughly 14,000 presumed victims from many different countries, whose photos had been altered without their knowledge or consent. Thirteen of them — mostly French public figures — formally joined the case as civil parties, among them Brigitte Macron, Audrey Tautou, Ségolène Royal, Christine Lagarde, Anne-Sophie Lapix, and Karine Le Marchand.</p>
-      <p>Most victims never knew their image was on the site at all, which is itself part of what makes this category of harm so hard to police: there is no notification, no takedown request, no moment where the person affected even learns to look.</p>
-    </div>
-  </div>
-</section>
-
-<section class="piece">
-  <div class="wrap">
-    <div class="section-num">03</div>
-    <div class="col">
-      <h2 class="section-title">How he was caught</h2>
-      <p>CFake's server was physically hosted in the United States, which is what ultimately unravelled it. American authorities spotted the platform first and alerted their French counterparts, opening a joint French–American investigation. The administrator, previously unknown to French justice, was arrested and brought before a Paris magistrate.</p>
-    </div>
-  </div>
-</section>
-
-<section class="piece">
-  <div class="wrap">
-    <div class="section-num">04</div>
-    <div class="col">
-      <h2 class="section-title">The judicial framework in France</h2>
-      <div class="callout">
-        <div class="eyebrow">Two statutes, one case</div>
-        <p>The prosecution rested on two distinct and relatively recent offenses. The first, created by the law of 24 January 2023, criminalises administering an online platform that enables illicit transactions — punishable by up to seven years' imprisonment and a €500,000 fine. The second, created by the law of 21 May 2024 and codified in articles 226-8 and 226-8-1 of the French penal code, specifically criminalises distributing an AI-generated montage of a sexual nature that reproduces a person's image or voice without their consent. That offense carries up to two years and €60,000 on its own, rising to three years and €75,000 when the content is distributed through an online communication service — the aggravating circumstance that applied here.</p>
-        <p>It's this second law, one of the newest tools in the French criminal arsenal built specifically for AI-generated content, that gave prosecutors a way to target not just any single fake image but the act of running a platform built around them at scale.</p>
-      </div>
-      <p style="margin-top:22px;">The case also sits alongside the EU's Digital Services Act, in force since 17 February 2024, which separately obliges platforms operating in Europe to remove illegal content — including non-consensual deepfakes — once notified.</p>
-    </div>
-  </div>
-</section>
-
-<section class="piece">
-  <div class="wrap">
-    <div class="section-num">05</div>
-    <div class="col">
-      <h2 class="section-title">The verdict</h2>
-      <div class="dossier">
-        <div class="case">
-          <div class="date">7 Jul 2026</div>
-          <div>
-            <h3>Paris tribunal correctionnel rules</h3>
-            <p>Two years' imprisonment — one served under electronic monitoring, one suspended — plus a €10,000 fine. The sentence came in below the prosecution's request, which had sought three years, two of them suspended.</p>
-          </div>
+    <div class="wrap">
+        <div class="section-num">01</div>
+        <div class="col">
+            <h2 class="section-title">The site</h2>
+            <p>CFake was created in 2007 by a 47-year-old computer scientist from Nice, who ran it largely unnoticed for
+                almost twenty years. By the time investigators shut it down, the platform hosted close to 300,000
+                doctored images and around 7,000 deepfake videos, with roughly 50 new uploads added every day.</p>
+            <div class="stat-grid">
+                <div class="stat">
+                    <div class="num">~300,000</div>
+                    <div class="label">images and montages hosted</div>
+                </div>
+                <div class="stat">
+                    <div class="num">~7,000</div>
+                    <div class="label">deepfake videos</div>
+                </div>
+                <div class="stat">
+                    <div class="num">200,000</div>
+                    <div class="label">registered user accounts</div>
+                </div>
+                <div class="stat">
+                    <div class="num">~4 million</div>
+                    <div class="label">visits per month</div>
+                </div>
+            </div>
+            <p>The site was funded through advertising. When police searched the administrator's home in Nice, they
+                seized 34.7 ETH — around €48,521 at the time — traced directly to that ad revenue.</p>
         </div>
-      </div>
-      <p style="margin-top:22px;">It stands as one of the first criminal convictions in France specifically for administering a platform dedicated to sexual deepfakes — a marker case for how the country's newest AI-content laws hold up in an actual courtroom.</p>
     </div>
-  </div>
+</section>
+
+<section class="piece">
+    <div class="wrap">
+        <div class="section-num">02</div>
+        <div class="col">
+            <h2 class="section-title">The victims</h2>
+            <p>Investigators identified roughly 14,000 presumed victims from many different countries, whose photos had
+                been altered without their knowledge or consent. Thirteen of them — mostly French public figures —
+                formally joined the case as civil parties, among them Brigitte Macron, Audrey Tautou, Ségolène Royal,
+                Christine Lagarde, Anne-Sophie Lapix, and Karine Le Marchand.</p>
+            <p>Most victims never knew their image was on the site at all, which is itself part of what makes this
+                category of harm so hard to police: there is no notification, no takedown request, no moment where the
+                person affected even learns to look.</p>
+        </div>
+    </div>
+</section>
+
+<section class="piece">
+    <div class="wrap">
+        <div class="section-num">03</div>
+        <div class="col">
+            <h2 class="section-title">How he was caught</h2>
+            <p>CFake's server was physically hosted in the United States, which is what ultimately unravelled it.
+                American authorities spotted the platform first and alerted their French counterparts, opening a joint
+                French–American investigation. The administrator, previously unknown to French justice, was arrested and
+                brought before a Paris magistrate.</p>
+        </div>
+    </div>
+</section>
+
+<section class="piece">
+    <div class="wrap">
+        <div class="section-num">04</div>
+        <div class="col">
+            <h2 class="section-title">The judicial framework in France</h2>
+            <div class="callout">
+                <div class="eyebrow">Two statutes, one case</div>
+                <p>The prosecution rested on two distinct and relatively recent offenses. The first, created by the law
+                    of 24 January 2023, criminalises administering an online platform that enables illicit transactions
+                    — punishable by up to seven years' imprisonment and a €500,000 fine. The second, created by the law
+                    of 21 May 2024 and codified in articles 226-8 and 226-8-1 of the French penal code, specifically
+                    criminalises distributing an AI-generated montage of a sexual nature that reproduces a person's
+                    image or voice without their consent. That offense carries up to two years and €60,000 on its own,
+                    rising to three years and €75,000 when the content is distributed through an online communication
+                    service — the aggravating circumstance that applied here.</p>
+                <p>It's this second law, one of the newest tools in the French criminal arsenal built specifically for
+                    AI-generated content, that gave prosecutors a way to target not just any single fake image but the
+                    act of running a platform built around them at scale.</p>
+            </div>
+            <p style="margin-top:22px;">The case also sits alongside the EU's Digital Services Act, in force since 17
+                February 2024, which separately obliges platforms operating in Europe to remove illegal content —
+                including non-consensual deepfakes — once notified.</p>
+        </div>
+    </div>
+</section>
+
+<section class="piece">
+    <div class="wrap">
+        <div class="section-num">05</div>
+        <div class="col">
+            <h2 class="section-title">The verdict</h2>
+            <div class="dossier">
+                <div class="case">
+                    <div class="date">7 Jul 2026</div>
+                    <div>
+                        <h3>Paris tribunal correctionnel rules</h3>
+                        <p>Two years' imprisonment — one served under electronic monitoring, one suspended — plus a
+                            €10,000 fine. The sentence came in below the prosecution's request, which had sought three
+                            years, two of them suspended.</p>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top:22px;">It stands as one of the first criminal convictions in France specifically for
+                administering a platform dedicated to sexual deepfakes — a marker case for how the country's newest
+                AI-content laws hold up in an actual courtroom.</p>
+        </div>
+    </div>
 </section>
 
 <section class="closing">
-  <div class="wrap">
-    <h2>Why this case matters</h2>
-    <p>CFake is the consent problem described in the main report, at industrial scale: not one fabricated image but a platform built and monetised around hundreds of thousands of them, running for nearly two decades before the law caught up. The eventual conviction shows the legal framework is starting to work — but it took cross-border cooperation, a server hosted on another continent, and 14,000 victims to get there.</p>
-  </div>
+    <div class="wrap">
+        <h2>Why this case matters</h2>
+        <p>CFake is the consent problem described in the main report, at industrial scale: not one fabricated image but
+            a platform built and monetised around hundreds of thousands of them, running for nearly two decades before
+            the law caught up. The eventual conviction shows the legal framework is starting to work — but it took
+            cross-border cooperation, a server hosted on another continent, and 14,000 victims to get there.</p>
+    </div>
 </section>
 
 <footer>
-  <div class="wrap">
-    <div class="credits">
-      <div class="label">Written by</div>
-      <div class="names">Léo Michard · Hugo Deschamps · Lorenzo Sasia · Tim Marsat</div>
+    <div class="wrap">
+        <div class="credits">
+            <div class="label">Written by</div>
+            <div class="names">Léo Michard · Hugo Deschamps · Lorenzo Sasia · Tim Marsat</div>
+        </div>
+        <div class="program">Embedded systems programme<br>Digital media ethics report</div>
     </div>
-    <div class="program">Embedded systems programme<br>Digital media ethics report</div>
-  </div>
 </footer>
 
 </body>
