@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz · Spot the Fake · Synthetic Witness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .quiz {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 56px 28px 64px;
+        }
+
+        .progress {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 32px;
+        }
+
+        .progress span {
+            flex: 1;
+            height: 4px;
+            background: var(--hair);
+        }
+
+        .progress span.ok { background: var(--glitch-teal); }
+        .progress span.ko { background: var(--glitch-red); }
+        .progress span.cur { background: var(--brass); }
+
+        .qmeta {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--muted);
+            margin-bottom: 14px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .hard {
+            color: var(--ink);
+            background: var(--glitch-red);
+            padding: 2px 8px;
+            letter-spacing: 0.06em;
+        }
+
+        .question {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: clamp(24px, 3.4vw, 34px);
+            line-height: 1.2;
+            margin: 0 0 28px;
+        }
+
+        .answers {
+            display: grid;
+            gap: 10px;
+        }
+
+        .answers button {
+            text-align: left;
+            font: inherit;
+            font-size: 17px;
+            color: var(--paper);
+            background: var(--panel);
+            border: 1px solid var(--hair);
+            padding: 16px 18px;
+            cursor: pointer;
+            display: flex;
+            gap: 14px;
+            align-items: baseline;
+        }
+
+        .answers button:hover:not(:disabled) {
+            border-color: var(--brass);
+        }
+
+        .answers button .k {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--brass);
+            flex-shrink: 0;
+        }
+
+        .answers button:disabled {
+            cursor: default;
+        }
+
+        .answers button.right {
+            border-color: var(--glitch-teal);
+            background: rgba(63, 167, 160, 0.14);
+        }
+
+        .answers button.wrong {
+            border-color: var(--glitch-red);
+            background: rgba(230, 69, 69, 0.14);
+        }
+
+        .answers button.dim {
+            opacity: 0.45;
+        }
+
+        .explain {
+            margin-top: 22px;
+            padding: 18px 20px;
+            border-left: 3px solid var(--brass);
+            background: var(--panel);
+            color: var(--body);
+            font-size: 15.5px;
+        }
+
+        .explain b {
+            color: var(--paper);
+        }
+
+        .explain .src {
+            display: block;
+            margin-top: 8px;
+            font-family: var(--mono);
+            font-size: 11.5px;
+            color: var(--muted);
+        }
+
+        .actions {
+            margin-top: 26px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--brass);
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .result {
+            text-align: center;
+        }
+
+        .result .score {
+            font-family: var(--serif);
+            font-size: clamp(64px, 12vw, 120px);
+            color: var(--brass);
+            line-height: 1;
+            margin: 10px 0 16px;
+        }
+
+        .result p {
+            color: var(--muted);
+            font-size: 17px;
+            max-width: 480px;
+            margin: 0 auto 28px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="masthead">
+    <div class="wrap">
+        <a class="mark" href="index.html">Synthetic<em>&nbsp;Witness</em></a>
+        <nav class="pager">
+            <a href="index.html">01 Léo</a>
+            <a href="part-2-consent.html">02 Hugo</a>
+            <a href="part-3-trust.html">03 Lorenzo</a>
+            <a href="part-4-responses.html">04 Tim</a>
+            <a class="on" href="quiz.html">Quiz</a>
+        </nav>
+    </div>
+</div>
+
+<header class="hero" style="padding:48px 0 40px">
+    <div class="wrap" style="display:block">
+        <div class="kicker">Final quiz · 10 questions · nine easy, one very hard</div>
+        <h1 class="headline" style="margin-bottom:10px">Were you <span class="glitch-span" data-text="listening">listening</span>?</h1>
+        <p class="standfirst" style="margin:0">Click an answer, or press 1 to 4. Enter for the next question.</p>
+    </div>
+</header>
+
+<main class="quiz" id="quiz" aria-live="polite"></main>
+
+<footer>
+    <div class="wrap">
+        <div class="credits">
+            <div class="label">Written by</div>
+            <div class="names">Léo Michard · Hugo Deschamps · Lorenzo Sasia · Tim Marsat</div>
+        </div>
+        <div class="program">Embedded systems programme<br>Digital media ethics report</div>
+    </div>
+</footer>
+
+<script>
+    (function () {
+        'use strict';
+        // a = index of the correct answer
+        var Q = [
+            {
+                q: 'The word "deepfake" is a mix of…',
+                o: ['"deep web" and "fake"', '"deep learning" and "fake"', '"deep sea" and "fake"', '"deep focus" and "fake"'],
+                a: 1,
+                e: 'Deepfakes are made with <b>deep learning</b>: neural networks trained on thousands of images of a face.',
+                s: 'Part 1 · Léo'
+            },
+            {
+                q: 'In the "Macron live on TikTok" video, who are we really watching?',
+                o: ['Emmanuel Macron himself', 'A professional actor in make-up', 'Someone using a real-time AI face-swap', 'A 3D video game character'],
+                a: 2,
+                e: 'It is a <b>real-time face-swap</b> by the digital artist SYSTAIME: a real person wearing Macron\'s face like a mask.',
+                s: 'Part 1 · Léo'
+            },
+            {
+                q: 'According to our presentation, which two conditions make a deepfake ethical?',
+                o: ['Consent and disclosure', 'Speed and realism', 'Low cost and good quality', 'Humour and virality'],
+                a: 0,
+                e: 'The ethical line is not the technology: <b>did the person consent</b>, and <b>does the audience know it\'s fake</b>?',
+                s: 'Part 1 · Léo'
+            },
+            {
+                q: 'In 2019, what share of deepfake videos online were non-consensual pornography?',
+                o: ['About 10%', 'About 50%', 'About 75%', 'About 96%'],
+                a: 3,
+                e: 'The Deeptrace study found <b>96%</b>, and almost all of them targeted women.',
+                s: 'Part 2 · Hugo'
+            },
+            {
+                q: 'In the French CFake affair, how many presumed victims did investigators identify?',
+                o: ['About 140', 'About 1,400', 'About 14,000', 'About 1.4 million'],
+                a: 2,
+                e: '<b>14,000</b> presumed victims, but only 13 went to court. Most never knew their image was on the site.',
+                s: 'Part 2 · Hugo'
+            },
+            {
+                q: 'What is the "liar\'s dividend"?',
+                o: ['The money a fraudster earns from a deepfake', 'Real evidence can be dismissed as "probably AI"', 'A tax on AI companies', 'A reward for reporting fakes'],
+                a: 1,
+                e: 'Once everyone knows fakes exist, anyone can deny <b>real</b> footage. Deepfakes make us doubt true things.',
+                s: 'Part 3 · Lorenzo'
+            },
+            {
+                q: 'How much money did an Arup employee transfer after a fake video call in 2024?',
+                o: ['$25,000', '$250,000', '$2.5 million', '$25 million'],
+                a: 3,
+                e: '<b>$25 million</b>: every person on the call, including the CFO, was a deepfake.',
+                s: 'Part 3 · Lorenzo'
+            },
+            {
+                q: 'What stopped the deepfake scam against the CEO of WPP?',
+                o: ['An AI detection software', 'The police', 'An employee asked a question the fake couldn\'t answer', 'The internet connection failed'],
+                a: 2,
+                e: 'A <b>human</b> asked a question the fake could not answer. No algorithm was needed.',
+                s: 'Part 3 & 4'
+            },
+            {
+                q: 'What does the C2PA standard do?',
+                o: ['It blurs faces in videos', 'It signs a photo at capture to prove where it comes from', 'It makes deepfakes faster to produce', 'It bans cameras on social media'],
+                a: 1,
+                e: 'A secure chip <b>signs the image the instant it is captured</b>; every edit adds a signed step, and an unsigned change breaks the chain.',
+                s: 'Part 4 · Tim'
+            },
+            {
+                q: 'Under article 226-8-1 of the French penal code, what is the maximum penalty for distributing a sexual deepfake through an online service?',
+                o: ['2 years and €60,000', '3 years and €75,000', '7 years and €500,000', '2 years and €10,000'],
+                a: 1,
+                e: '<b>3 years and €75,000</b> with the online aggravating circumstance (2 years / €60,000 without it). 7 years / €500,000 is the other offence (running an illegal platform), and 2 years / €10,000 is the actual CFake sentence.',
+                s: 'Part 4 · Tim + CFake annex',
+                hard: true
+            }
+        ];
+
+        var root = document.getElementById('quiz');
+        var i = 0, score = 0, results = [], answered = false;
+
+        function progress() {
+            return '<div class="progress">' + Q.map(function (_, k) {
+                var c = results[k] === true ? 'ok' : results[k] === false ? 'ko' : k === i ? 'cur' : '';
+                return '<span class="' + c + '"></span>';
+            }).join('') + '</div>';
+        }
+
+        function show() {
+            answered = false;
+            var q = Q[i];
+            root.innerHTML = progress() +
+                '<div class="qmeta">Question ' + (i + 1) + ' / ' + Q.length +
+                '</div>' +
+                '<h2 class="question">' + q.q + '</h2>' +
+                '<div class="answers">' + q.o.map(function (o, k) {
+                    return '<button data-k="' + k + '"><span class="k">' + (k + 1) + '</span><span>' + o + '</span></button>';
+                }).join('') + '</div><div id="after"></div>';
+            root.querySelectorAll('.answers button').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    pick(+b.dataset.k);
+                });
+            });
+        }
+
+        function pick(k) {
+            if (answered) return;
+            answered = true;
+            var q = Q[i], ok = k === q.a;
+            if (ok) score++;
+            results[i] = ok;
+            root.querySelectorAll('.answers button').forEach(function (b, n) {
+                b.disabled = true;
+                if (n === q.a) b.classList.add('right');
+                else if (n === k) b.classList.add('wrong');
+                else b.classList.add('dim');
+            });
+            root.querySelector('.progress').outerHTML = progress();
+            document.getElementById('after').innerHTML =
+                '<div class="explain">' + (ok ? '✓ Correct. ' : '✗ Not quite. ') + q.e +
+                '<span class="src">Explained in: ' + q.s + '</span></div>' +
+                '<div class="actions"><button class="btn" id="next">' +
+                (i < Q.length - 1 ? 'Next question →' : 'See my score →') + '</button></div>';
+            document.getElementById('next').addEventListener('click', next);
+            document.getElementById('next').focus();
+        }
+
+        function next() {
+            i++;
+            if (i < Q.length) show();
+            else end();
+        }
+
+        function end() {
+            var msg = score === 10 ? 'Perfect, even the very hard one. You would make a great fact-checker.'
+                : score >= 8 ? 'Excellent. Seeing is no longer believing, and you got the message.'
+                    : score >= 5 ? 'Not bad! A few details slipped through, like a well-made deepfake.'
+                        : 'The fakes got you this time. Maybe re-read the four parts?';
+            root.innerHTML = progress() + '<div class="result"><div class="kicker">Your score</div>' +
+                '<div class="score">' + score + '/10</div><p>' + msg + '</p>' +
+                '<button class="btn" id="again">↻ Play again</button></div>';
+            document.getElementById('again').addEventListener('click', function () {
+                i = 0;
+                score = 0;
+                results = [];
+                show();
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key >= '1' && e.key <= '4' && i < Q.length) pick(+e.key - 1);
+            if (e.key === 'Enter' && answered && document.activeElement.id !== 'next') next();
+        });
+
+        show();
+    })();
+</script>
+</body>
+</html>

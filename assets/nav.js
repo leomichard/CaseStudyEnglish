@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    var pages = ['index.html', 'part-2-consent.html', 'part-3-trust.html', 'part-4-responses.html'];
+    var pages = ['index.html', 'part-2-consent.html', 'part-3-trust.html', 'part-4-responses.html', 'quiz.html'];
     var here = location.pathname.split('/').pop() || 'index.html';
     var i = pages.indexOf(here);
 

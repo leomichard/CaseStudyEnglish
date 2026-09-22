@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>04 · Fighting Back — Synthetic Witness</title>
+    <title>04 · Fighting Back · Synthetic Witness</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
@@ -20,6 +20,7 @@
             <a href="part-2-consent.html">02 Hugo</a>
             <a href="part-3-trust.html">03 Lorenzo</a>
             <a class="on" href="part-4-responses.html">04 Tim</a>
+            <a href="quiz.html">Quiz</a>
         </nav>
     </div>
 </div>
@@ -35,7 +36,7 @@
             <div class="byline"><strong>Two answers:</strong> the law, and the hardware</div>
         </div>
         <div class="stage">
-            <div class="tag">FIG. 4 — THE CHAIN OF TRUST</div>
+            <div class="tag">FIG. 4 · THE CHAIN OF TRUST</div>
             <canvas data-scene="trustChain" aria-label="3D chain from camera sensor to viewer, sometimes broken by tampering"></canvas>
             <div class="legend">Image status: <b data-status>in transit</b> · every second trip, someone edits the
                 image without signing it
@@ -53,8 +54,7 @@
                 <div class="ev">
                     <div class="when">Feb 2024 · European Union</div>
                     <div class="what">Digital Services Act fully in force</div>
-                    <p>Platforms operating in Europe must remove illegal content — including non-consensual deepfakes —
-                        once notified.</p>
+                    <p>Platforms operating in Europe must remove illegal content, including non-consensual deepfakes, once they are notified.</p>
                 </div>
                 <div class="ev">
                     <div class="when">May 2024 · France</div>
@@ -77,8 +77,7 @@
                 <div class="ev">
                     <div class="when">Aug 2026 · European Union</div>
                     <div class="what">AI Act transparency rules</div>
-                    <p>Deepfakes must be clearly disclosed as artificially generated or manipulated — turning Léo's
-                        "disclosure" principle into law.</p>
+                    <p>Deepfakes must be clearly labelled as made or changed by AI. Léo's "disclosure" principle becomes law.</p>
                 </div>
             </div>
         </div>
@@ -92,28 +91,18 @@
             <h2 class="section-title">Where embedded systems come in</h2>
             <div class="callout">
                 <div class="eyebrow">The hardware side of the problem</div>
-                <p>Most of the deepfake debate happens at the software layer — the models that generate fakes and the
-                    algorithms trained to catch them. But those fixes only work if the raw signal was trustworthy in
-                    the first place, which is a hardware question.</p>
+                <p>Most of the deepfake debate is about software: the models that create fakes and the algorithms that detect them. But these fixes only work if the original image can be trusted, and that depends on the hardware.</p>
                 <ul>
-                    <li><strong>Provenance at capture.</strong> Cryptographically signing a photo the instant a sensor
-                        captures it — the approach behind the C2PA "Content Credentials" standard, already in some
-                        Leica, Sony and Nikon cameras — requires a secure element in the camera itself, not a setting a
-                        user can toggle.
+                    <li><strong>Provenance at capture.</strong> Signing a photo with cryptography the moment the sensor captures it is the idea behind the C2PA "Content Credentials" standard, already used in some Leica, Sony and Nikon cameras. It needs a secure chip inside the camera itself.
                     </li>
-                    <li><strong>Liveness detection.</strong> Telling a real face from a screen or a mask relies on
-                        dedicated hardware — depth sensors, infrared emitters, time-of-flight cameras, as in Face ID —
-                        because a software-only check on a 2D image is easy to spoof.
+                    <li><strong>Liveness detection.</strong> Telling a real face from a screen or a mask needs dedicated hardware, like the depth and infrared sensors in Face ID, because a simple 2D image is easy to fake.
                     </li>
-                    <li><strong>On-device detection.</strong> Running detection on a local edge-AI chip means a video
-                        call can be flagged in real time, without a cloud round trip an attacker could intercept.
+                    <li><strong>On-device detection.</strong> With a detection chip inside the device, a video call can be checked in real time, without sending data to the cloud.
                     </li>
-                    <li><strong>Roots of trust.</strong> Secure enclaves and TPMs anchor the whole chain — if the chip
-                        can be compromised, no signature it produces can be trusted.
+                    <li><strong>Roots of trust.</strong> Secure chips such as TPMs are the base of the whole chain. If the chip is hacked, none of its signatures can be trusted.
                     </li>
                 </ul>
-                <p>Put simply: detecting deepfakes is a machine-learning problem, but proving a piece of media was
-                    never fake is an embedded-systems problem.</p>
+                <p>In short, detecting deepfakes is a software problem, but proving that a photo is real is an embedded-systems problem.</p>
             </div>
         </div>
     </div>
@@ -124,9 +113,7 @@
         <div class="section-num">03</div>
         <div class="col">
             <h2 class="section-title">No single fix</h2>
-            <p>None of the cases we presented were stopped by one clever piece of technology. The WPP attempt was
-                caught by a human asking an unscriptable question. The Arup fraud wasn't. The gap between those two
-                outcomes is where the real ethical work sits:</p>
+            <p>None of the cases we presented were stopped by technology alone. The WPP scam was stopped by a human asking a question the fake could not answer. The Arup fraud was not. To protect people, we need four things:</p>
             <div class="stat-grid">
                 <div class="stat">
                     <div class="num">Laws</div>
@@ -159,7 +146,7 @@
                     <p>Thank you Lorenzo. So, what can we do? We think the answer has two sides: the law, and the
                         technology.</p>
                     <p>First, the law is finally catching up. In France, since May 2024, sharing a sexual deepfake of
-                        someone without consent is a specific crime — that's the law that convicted the CFake
+                        someone without consent is a specific crime. That's the law that convicted the CFake
                         administrator. In Europe, the Digital Services Act forces platforms to remove illegal content
                         once notified, and since August 2026 the AI Act requires deepfakes to be clearly labelled as
                         artificial. In the United States, the Take It Down Act, signed in 2025, forces platforms to
@@ -169,20 +156,20 @@
                         deepfakes is a software arms race, and detectors often lose. So the better question is not "is
                         this fake?" but "can we prove this is real?"</p>
                     <p><span class="cue">[point at 3D figure]</span> This chain shows the idea. It starts at the camera
-                        sensor. A secure chip inside the camera signs the image the instant it's captured — that's the
+                        sensor. A secure chip inside the camera signs the image the instant it's captured. That's the
                         C2PA standard, already in some Leica, Sony and Nikon cameras. Each edit adds a signed step. If
-                        someone modifies the image without signing — watch the red link — the chain breaks, and the
+                        someone modifies the image without signing (watch the red link), the chain breaks, and the
                         viewer knows it can't be trusted.</p>
                     <p>Other hardware helps too: depth and infrared sensors, like Face ID, can tell a real face from a
                         screen or a mask. And edge-AI chips can flag a fake live, during a video call, without sending
                         anything to the cloud.</p>
                     <p>But none of this works alone. Remember WPP: it wasn't an algorithm that stopped the scam, it
                         was a human asking the right question.</p>
-                    <p>So, to conclude: deepfakes are not unethical by nature — Léo showed they can even be art. They
+                    <p>So, to conclude: deepfakes are not unethical by nature. Léo showed they can even be art. They
                         become unethical without consent and without disclosure. And the answer must combine laws that
                         punish, hardware that proves, platforms that take responsibility, and citizens who learn that
                         seeing is no longer believing.</p>
-                    <p>Thank you for listening — we're happy to take your questions.</p>
+                    <p>Thank you for listening, we're happy to take your questions.</p>
                 </div>
             </details>
         </div>
@@ -192,7 +179,7 @@
 <div class="wrap">
     <div class="next-prev">
         <a href="part-3-trust.html"><small>← Part 3 · Lorenzo</small>Truth, elections &amp; trust</a>
-        <a class="nx" href="cfake-affair.html"><small>Annex →</small>The CFake affair, full case file</a>
+        <a class="nx" href="quiz.html"><small>Final quiz →</small>10 questions: were you listening?</a>
     </div>
 </div>
 
