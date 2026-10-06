@@ -366,68 +366,137 @@
         });
     }
 
-    /* 4 — Chain of trust: sensor → secure chip → signed edit → platform → viewer */
+    /* 4 — Chain of trust: sensor → secure chip → signed edit → platform → viewer
+     * A photo travels along the chain collecting signature seals. Every second trip an
+     * attacker edits it without signing: the link breaks, seals turn red, the viewer rejects it. */
     function trustChain(canvas) {
         var s = setup(canvas, 7.5);
-        s.camera.position.set(0, 1.4, 7.5);
+        s.camera.position.set(0, 1.6, 7.8);
         s.camera.lookAt(0, 0, 0);
-        s.scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+        s.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
         var dl = new THREE.DirectionalLight(0xffffff, 0.9);
         dl.position.set(3, 5, 4);
         s.scene.add(dl);
+        var rim = new THREE.PointLight(0xC9A227, 0.8, 8);
+        rim.position.set(0, 1.5, 1.5);
+        s.scene.add(rim);
+
+        var floor = new THREE.GridHelper(12, 24, 0x3a3f4a, 0x22262e);
+        floor.position.y = -0.95;
+        floor.material.transparent = true;
+        floor.material.opacity = 0.55;
+        s.root.add(floor);
 
         var names = ['SENSOR', 'SECURE CHIP', 'SIGNED EDIT', 'PLATFORM', 'VIEWER'];
         var subs = ['photons captured', 'C2PA signature', 'edit logged + signed', 'credentials kept', ''];
         var blocks = [], labels = [];
         var spacing = 1.55;
 
-        function labelCanvas(title, sub, color) {
+        function labelCanvas(title, sub, color, num) {
             var c = document.createElement('canvas');
             c.width = 512;
             c.height = 256;
             var g = c.getContext('2d');
-            g.fillStyle = '#15181D';
+            var bg = g.createLinearGradient(0, 0, 0, 256);
+            bg.addColorStop(0, '#1d2128');
+            bg.addColorStop(1, '#101317');
+            g.fillStyle = bg;
             g.fillRect(0, 0, 512, 256);
             g.strokeStyle = color;
             g.lineWidth = 8;
             g.strokeRect(4, 4, 504, 248);
+            g.lineWidth = 3;
+            g.globalAlpha = 0.5;
+            g.strokeRect(20, 20, 472, 216);
+            g.globalAlpha = 1;
             g.fillStyle = color;
             g.font = '600 52px "IBM Plex Mono", monospace';
             g.textAlign = 'center';
-            g.fillText(title, 256, 120);
+            g.fillText(title, 256, 125);
             g.fillStyle = '#9AA0AC';
             g.font = '34px "IBM Plex Mono", monospace';
-            g.fillText(sub, 256, 180);
+            g.fillText(sub, 256, 185);
+            if (num) {
+                g.textAlign = 'left';
+                g.font = '500 30px "IBM Plex Mono", monospace';
+                g.fillStyle = color;
+                g.fillText(num, 38, 64);
+            }
             return c;
         }
 
+        var brassMat = new THREE.MeshStandardMaterial({color: 0xC9A227, metalness: 1, roughness: 0.3});
+        var edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.1, 0.55, 0.5));
+
         names.forEach(function (n, i) {
             var x = (i - 2) * spacing;
-            var cv = labelCanvas(n, subs[i], '#C9A227');
+            var cv = labelCanvas(n, subs[i], '#C9A227', '0' + (i + 1));
             var tex = new THREE.CanvasTexture(cv);
             var side = new THREE.MeshStandardMaterial({color: 0x1B1F26, metalness: 0.6, roughness: 0.4});
             var front = new THREE.MeshStandardMaterial({map: tex, metalness: 0.1, roughness: 0.8});
             var box = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.55, 0.5),
                 [side, side, side, side, front, side]);
             box.position.set(x, Math.sin(i * 0.9) * 0.15, -Math.abs(i - 2) * 0.35);
+            box.userData.baseY = box.position.y;
+            box.add(new THREE.LineSegments(edgeGeo,
+                new THREE.LineBasicMaterial({color: 0xC9A227, transparent: true, opacity: 0.55})));
             s.root.add(box);
             blocks.push(box);
             labels.push({canvas: cv, tex: tex});
-            // tiny "pins" to make the chip read as a chip
-            if (i === 1) {
+
+            if (i === 0) { // camera lens on top of the sensor
+                var barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.2, 0.14, 24), brassMat);
+                barrel.position.set(0, 0.34, 0);
+                box.add(barrel);
+                var glass = new THREE.Mesh(new THREE.SphereGeometry(0.13, 20, 16),
+                    new THREE.MeshStandardMaterial({color: 0x3FA7A0, metalness: 0.2, roughness: 0.05, emissive: 0x0d3b38}));
+                glass.position.set(0, 0.42, 0);
+                glass.scale.y = 0.5;
+                box.add(glass);
+            }
+            if (i === 1) { // pins on both long sides so the chip reads as a chip
                 for (var p = -4; p <= 4; p++) {
-                    var pin = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.12, 0.05),
-                        new THREE.MeshStandardMaterial({color: 0xC9A227, metalness: 1, roughness: 0.3}));
-                    pin.position.set(x + p * 0.11, box.position.y - 0.33, box.position.z);
-                    s.root.add(pin);
+                    [-1, 1].forEach(function (sd) {
+                        var pin = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.12, 0.05), brassMat);
+                        pin.position.set(p * 0.11, sd * 0.33, 0);
+                        box.add(pin);
+                    });
                 }
+            }
+            if (i === 2) { // signing stamp
+                var stamp = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.03, 10, 28), brassMat);
+                stamp.position.set(0, 0.5, 0);
+                stamp.rotation.x = Math.PI / 2;
+                box.add(stamp);
+                box.userData.stamp = stamp;
+            }
+            if (i === 3) { // server rack slabs
+                [0.34, 0.44].forEach(function (y) {
+                    var slab = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.06, 0.4), side);
+                    slab.position.set(0, y, 0);
+                    box.add(slab);
+                    var led = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.03, 0.02),
+                        new THREE.MeshBasicMaterial({color: 0x3FA7A0}));
+                    led.position.set(0.35, y, 0.21);
+                    box.add(led);
+                });
             }
         });
 
-        var links = [];
+        // links: a beam plus a small ring on every segment
+        var links = [], beams = [];
+        var up = new THREE.Vector3(0, 1, 0);
         for (var i = 0; i < names.length - 1; i++) {
             var a = blocks[i].position, b = blocks[i + 1].position;
             var mid = a.clone().add(b).multiplyScalar(0.5);
+            var dir = b.clone().sub(a);
+            var len = dir.length();
+            var beam = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, len, 8),
+                new THREE.MeshBasicMaterial({color: 0x4A505B}));
+            beam.position.copy(mid);
+            beam.quaternion.setFromUnitVectors(up, dir.clone().normalize());
+            s.root.add(beam);
+            beams.push(beam);
             var link = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.035, 12, 32),
                 new THREE.MeshStandardMaterial({color: 0xC9A227, metalness: 0.9, roughness: 0.3, emissive: 0x000000}));
             link.position.copy(mid);
@@ -435,16 +504,115 @@
             s.root.add(link);
             links.push(link);
         }
+        var breakPoint = links[2].position.clone();
 
-        var pulse = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16),
-            new THREE.MeshBasicMaterial({color: 0xEDEBE6}));
-        s.root.add(pulse);
+        // the traveller: a small photo with signature seals
+        function photoCanvas(bad) {
+            var c = document.createElement('canvas');
+            c.width = 128;
+            c.height = 96;
+            var g = c.getContext('2d');
+            var sky = g.createLinearGradient(0, 0, 0, 96);
+            sky.addColorStop(0, '#2b4a6f');
+            sky.addColorStop(1, '#e9a65b');
+            g.fillStyle = sky;
+            g.fillRect(0, 0, 128, 96);
+            g.fillStyle = '#f4d27a';
+            g.beginPath();
+            g.arc(92, 38, 12, 0, 7);
+            g.fill();
+            g.fillStyle = '#1c2430';
+            g.beginPath();
+            g.moveTo(0, 96);
+            g.lineTo(34, 42);
+            g.lineTo(62, 78);
+            g.lineTo(84, 56);
+            g.lineTo(128, 96);
+            g.fill();
+            if (bad) {
+                // glitch: shift horizontal slices, then tint red
+                var src = document.createElement('canvas');
+                src.width = 128;
+                src.height = 96;
+                src.getContext('2d').drawImage(c, 0, 0);
+                for (var k = 0; k < 9; k++) {
+                    var y = (k * 37) % 90;
+                    g.drawImage(src, 0, y, 128, 7, (k % 2 ? 1 : -1) * (6 + k), y, 128, 7);
+                }
+                g.fillStyle = 'rgba(230,69,69,0.38)';
+                g.fillRect(0, 0, 128, 96);
+            }
+            return c;
+        }
+
+        var photoGood = new THREE.CanvasTexture(photoCanvas(false));
+        var photoBad = new THREE.CanvasTexture(photoCanvas(true));
+        var traveller = new THREE.Group();
+        var photoMat = new THREE.MeshBasicMaterial({map: photoGood, side: THREE.DoubleSide});
+        var photo = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.3), photoMat);
+        var frameMat = new THREE.MeshBasicMaterial({color: 0xEDEBE6, side: THREE.DoubleSide});
+        var frame = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.36), frameMat);
+        frame.position.z = -0.003;
+        traveller.add(frame);
+        traveller.add(photo);
         var glow = new THREE.Sprite(new THREE.SpriteMaterial({
             map: dotTexture(), color: 0xC9A227, transparent: true,
             blending: THREE.AdditiveBlending, depthWrite: false
         }));
-        glow.scale.set(0.7, 0.7, 0.7);
-        pulse.add(glow);
+        glow.scale.set(1.0, 1.0, 1.0);
+        glow.position.z = -0.05;
+        traveller.add(glow);
+        var seals = [];
+        for (var k = 0; k < 3; k++) {
+            var seal = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.012, 8, 16),
+                new THREE.MeshBasicMaterial({color: 0x3FA7A0}));
+            seal.position.set(0.27, 0.14 - k * 0.1, 0.01);
+            traveller.add(seal);
+            seals.push(seal);
+        }
+        s.root.add(traveller);
+
+        // glowing trail behind the photo
+        var TRAIL = 28;
+        var trailPos = new Float32Array(TRAIL * 3);
+        var trailGeo = new THREE.BufferGeometry();
+        trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPos, 3));
+        var trailMat = new THREE.PointsMaterial({
+            map: dotTexture(), color: 0xC9A227, size: 0.16, transparent: true, opacity: 0.8,
+            blending: THREE.AdditiveBlending, depthWrite: false
+        });
+        var trail = new THREE.Points(trailGeo, trailMat);
+        trail.frustumCulled = false;
+        s.root.add(trail);
+
+        // the attacker: a red spiky shard that drops onto the third link
+        var attacker = new THREE.Mesh(new THREE.IcosahedronGeometry(0.17, 0),
+            new THREE.MeshStandardMaterial({color: 0xE64545, emissive: 0x7a1414, metalness: 0.5, roughness: 0.4, flatShading: true}));
+        var aGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: dotTexture(), color: 0xE64545, transparent: true,
+            blending: THREE.AdditiveBlending, depthWrite: false
+        }));
+        aGlow.scale.set(0.9, 0.9, 0.9);
+        attacker.add(aGlow);
+        attacker.visible = false;
+        s.root.add(attacker);
+
+        // sparks at the break
+        var SP = 36;
+        var spPos = new Float32Array(SP * 3), spDir = [];
+        for (var k = 0; k < SP; k++) {
+            spDir.push(new THREE.Vector3(Math.random() - 0.5, Math.random() * 0.8, Math.random() - 0.5).normalize()
+                .multiplyScalar(0.3 + Math.random() * 0.5));
+        }
+        var spGeo = new THREE.BufferGeometry();
+        spGeo.setAttribute('position', new THREE.BufferAttribute(spPos, 3));
+        var sparks = new THREE.Points(spGeo, new THREE.PointsMaterial({
+            map: dotTexture(), color: 0xE64545, size: 0.1, transparent: true,
+            blending: THREE.AdditiveBlending, depthWrite: false
+        }));
+        sparks.frustumCulled = false;
+        sparks.visible = false;
+        s.root.add(sparks);
 
         var viewer = labels[4], lastState = null;
         var status = canvas.parentNode.querySelector('[data-status]');
@@ -457,7 +625,7 @@
                 ok: ['VERIFIED ✓', 'chain intact', '#3FA7A0'],
                 ko: ['UNVERIFIED ✗', 'chain broken', '#E64545']
             }[state];
-            var fresh = labelCanvas(map[0], map[1], map[2]);
+            var fresh = labelCanvas(map[0], map[1], map[2], '05');
             viewer.canvas.getContext('2d').drawImage(fresh, 0, 0);
             viewer.tex.needsUpdate = true;
             if (status) {
@@ -466,26 +634,94 @@
             }
         }
 
+        var NONE = new THREE.Color(0, 0, 0);
         s.loop(function (t) {
             // 7 s per trip; every second trip gets tampered between SIGNED EDIT and PLATFORM
             var trip = Math.floor(t / 7), f = (t % 7) / 6, tampered = trip % 2 === 1;
             var seg = Math.min(3.999, f * 4), si = Math.floor(seg), sf = seg - si;
-            if (f <= 1) {
-                pulse.visible = true;
-                pulse.position.lerpVectors(blocks[si].position, blocks[si + 1].position, sf);
-                pulse.position.z += 0.3;
-            } else {
-                pulse.visible = false;
-            }
             var broken = tampered && seg > 2.5;
-            glow.material.color.copy(broken ? RED : BRASS);
-            pulse.material.color.copy(broken ? RED : PAPER);
+            var running = f <= 1;
+
+            blocks.forEach(function (bk, i) {
+                bk.position.y = bk.userData.baseY + Math.sin(t * 1.2 + i) * 0.035;
+            });
+            blocks[2].userData.stamp.rotation.z = t * 1.5;
+
+            // traveller
+            traveller.visible = running;
+            trail.visible = running;
+            if (running) {
+                traveller.position.lerpVectors(blocks[si].position, blocks[si + 1].position, sf);
+                traveller.position.y += 0.5 + Math.sin(t * 3) * 0.04;
+                traveller.position.z += 0.35;
+                traveller.rotation.y = Math.sin(t * 2) * 0.25;
+                traveller.rotation.z = broken ? Math.sin(t * 25) * 0.12 : 0;
+                var wantMap = broken ? photoBad : photoGood;
+                if (photoMat.map !== wantMap) {
+                    photoMat.map = wantMap;
+                    photoMat.needsUpdate = true;
+                }
+                glow.material.color.copy(broken ? RED : BRASS);
+                frameMat.color.copy(broken ? RED : PAPER);
+                seals.forEach(function (sl, j) {
+                    sl.visible = broken ? j < 2 : seg >= j + 0.9;
+                    sl.material.color.copy(broken ? RED : TEAL);
+                    sl.rotation.z = t * 2;
+                });
+                for (var k = TRAIL - 1; k > 0; k--) {
+                    for (var c = 0; c < 3; c++) {
+                        trailPos[k * 3 + c] += (trailPos[(k - 1) * 3 + c] - trailPos[k * 3 + c]) * 0.55;
+                    }
+                }
+                trailPos[0] = traveller.position.x;
+                trailPos[1] = traveller.position.y - 0.25;
+                trailPos[2] = traveller.position.z;
+                trailGeo.attributes.position.needsUpdate = true;
+                trailMat.color.copy(broken ? RED : BRASS);
+            }
+
+            // beams and rings
+            beams.forEach(function (bm, k) {
+                var bad = tampered && k === 2 && seg > 2.5;
+                var done = running && k < si;
+                if (bad) {
+                    bm.visible = Math.sin(t * 40) > 0;
+                    bm.material.color.copy(RED);
+                } else {
+                    bm.visible = true;
+                    bm.material.color.copy(done ? (tampered && k > 2 ? RED : TEAL) : (running && k === si ? BRASS : GREY));
+                }
+            });
             links.forEach(function (l, k) {
                 var bad = tampered && k === 2 && seg > 2.5;
                 l.material.color.copy(bad ? RED : BRASS);
-                l.material.emissive.copy(bad ? RED : new THREE.Color(0)).multiplyScalar(bad ? 0.6 : 0);
+                l.material.emissive.copy(bad ? RED : NONE).multiplyScalar(bad ? 0.6 : 0);
                 l.rotation.x = bad ? Math.sin(t * 40) * 0.25 : 0;
             });
+
+            // attacker drops onto link 3 while the photo approaches
+            var attacking = tampered && running && seg > 1.6 && seg < 3.4;
+            attacker.visible = attacking;
+            if (attacking) {
+                var drop = Math.min(1, (seg - 1.6) / 0.9);
+                attacker.position.set(breakPoint.x, breakPoint.y + 1.4 - drop * 0.95 + Math.sin(t * 6) * 0.05, breakPoint.z + 0.1);
+                attacker.rotation.x = t * 3;
+                attacker.rotation.y = t * 2;
+            }
+
+            // sparks at the break
+            sparks.visible = tampered && running && seg > 2.5 && seg < 3.6;
+            if (sparks.visible) {
+                for (var k = 0; k < SP; k++) {
+                    var age = (t * 1.6 + k / SP) % 1;
+                    spPos[k * 3] = breakPoint.x + spDir[k].x * age;
+                    spPos[k * 3 + 1] = breakPoint.y + spDir[k].y * age - age * age * 0.5;
+                    spPos[k * 3 + 2] = breakPoint.z + spDir[k].z * age;
+                }
+                spGeo.attributes.position.needsUpdate = true;
+            }
+
+            rim.color.copy(broken ? RED : BRASS);
             setViewer(f < 0.97 ? 'wait' : tampered ? 'ko' : 'ok');
             s.applyDrag(0);
             s.root.rotation.y += Math.sin(t * 0.3) * 0.25 - s.root.rotation.y * 0.02;

@@ -45,6 +45,22 @@
     </div>
 </header>
 
+<section class="piece video-piece">
+    <div class="wrap">
+        <div class="section-num">▶</div>
+        <div class="col" style="flex:1">
+            <h2 class="section-title">Tim's video</h2>
+            <div class="video-frame">
+                <video controls playsinline preload="metadata">
+                    <source src="media/tim.mp4" type="video/mp4">
+                    Your browser cannot play this video.
+                </video>
+            </div>
+            <div class="caption">Tim · full video, no loop</div>
+        </div>
+    </div>
+</section>
+
 <section class="piece">
     <div class="wrap">
         <div class="section-num">01</div>
@@ -136,46 +152,6 @@
     </div>
 </section>
 
-<section class="piece">
-    <div class="wrap">
-        <div class="section-num">✎</div>
-        <div class="col" style="flex:1">
-            <details class="script">
-                <summary>Speaker script · Tim · ≈ 2 min 30 (press S)</summary>
-                <div class="body">
-                    <p>Thank you Lorenzo. So, what can we do? We think the answer has two sides: the law, and the
-                        technology.</p>
-                    <p>First, the law is finally catching up. In France, since May 2024, sharing a sexual deepfake of
-                        someone without consent is a specific crime. That's the law that convicted the CFake
-                        administrator. In Europe, the Digital Services Act forces platforms to remove illegal content
-                        once notified, and since August 2026 the AI Act requires deepfakes to be clearly labelled as
-                        artificial. In the United States, the Take It Down Act, signed in 2025, forces platforms to
-                        remove intimate deepfakes within 48 hours. And Denmark proposed something radical: giving every
-                        citizen a kind of copyright over their own face and voice.</p>
-                    <p>But laws act after the damage. That's where our field, embedded systems, comes in. Detecting
-                        deepfakes is a software arms race, and detectors often lose. So the better question is not "is
-                        this fake?" but "can we prove this is real?"</p>
-                    <p><span class="cue">[point at 3D figure]</span> This chain shows the idea. It starts at the camera
-                        sensor. A secure chip inside the camera signs the image the instant it's captured. That's the
-                        C2PA standard, already in some Leica, Sony and Nikon cameras. Each edit adds a signed step. If
-                        someone modifies the image without signing (watch the red link), the chain breaks, and the
-                        viewer knows it can't be trusted.</p>
-                    <p>Other hardware helps too: depth and infrared sensors, like Face ID, can tell a real face from a
-                        screen or a mask. And edge-AI chips can flag a fake live, during a video call, without sending
-                        anything to the cloud.</p>
-                    <p>But none of this works alone. Remember WPP: it wasn't an algorithm that stopped the scam, it
-                        was a human asking the right question.</p>
-                    <p>So, to conclude: deepfakes are not unethical by nature. Léo showed they can even be art. They
-                        become unethical without consent and without disclosure. And the answer must combine laws that
-                        punish, hardware that proves, platforms that take responsibility, and citizens who learn that
-                        seeing is no longer believing.</p>
-                    <p>Thank you for listening, we're happy to take your questions.</p>
-                </div>
-            </details>
-        </div>
-    </div>
-</section>
-
 <div class="wrap">
     <div class="next-prev">
         <a href="part-3-trust.html"><small>← Part 3 · Lorenzo</small>Truth, elections &amp; trust</a>
@@ -189,7 +165,7 @@
             <div class="label">Written by</div>
             <div class="names">Léo Michard · Hugo Deschamps · Lorenzo Sasia · Tim Marsat</div>
         </div>
-        <div class="program">Embedded systems programme<br>Digital media ethics report<br><span class="keys">← → change page · S speaker script</span></div>
+        <div class="program">Embedded systems programme<br>Digital media ethics report<br><span class="keys">← → change page</span></div>
     </div>
 </footer>
 

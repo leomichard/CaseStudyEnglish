@@ -4,18 +4,11 @@
     var here = location.pathname.split('/').pop() || 'index.html';
     var i = pages.indexOf(here);
 
-    // ← / → : previous / next speaker page.  S : open/close the speaker script.
+    // ← / → : previous / next page.
     document.addEventListener('keydown', function (e) {
-        if (e.target.closest('input, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.target.closest('input, textarea, video') || e.metaKey || e.ctrlKey || e.altKey) return;
         if (e.key === 'ArrowRight' && i >= 0 && i < pages.length - 1) location.href = pages[i + 1];
         if (e.key === 'ArrowLeft' && i > 0) location.href = pages[i - 1];
-        if (e.key === 's' || e.key === 'S') {
-            var d = document.querySelector('details.script');
-            if (d) {
-                d.open = !d.open;
-                if (d.open) d.scrollIntoView({behavior: 'smooth', block: 'start'});
-            }
-        }
     });
 
     // Looping muted video: use the local file media/<name>.mp4 if present,

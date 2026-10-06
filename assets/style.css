@@ -548,52 +548,20 @@ h2.section-title {
     margin: 0;
 }
 
-/* Speaker script */
-details.script {
-    margin: 0;
-    border: 1px dashed var(--brass-dim);
-    background: var(--panel);
+/* Full-length video */
+.video-frame {
+    background: #000;
+    border: 1px solid var(--hair);
+    box-shadow: 0 0 0 6px var(--panel), 0 20px 60px rgba(0, 0, 0, 0.6);
+    max-width: 880px;
+    margin: 0 auto;
 }
 
-details.script summary {
-    cursor: pointer;
-    padding: 16px 22px;
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--brass);
-    list-style: none;
-}
-
-details.script summary::-webkit-details-marker {
-    display: none;
-}
-
-details.script summary::before {
-    content: "▸ ";
-}
-
-details.script[open] summary::before {
-    content: "▾ ";
-}
-
-details.script .body {
-    padding: 0 22px 22px;
-    font-family: var(--serif);
-    font-size: 17px;
-    line-height: 1.65;
-    color: var(--paper);
-}
-
-details.script .body p {
-    margin: 0 0 14px;
-}
-
-details.script .cue {
-    font-family: var(--mono);
-    font-size: 11.5px;
-    color: var(--glitch-teal);
-    background: rgba(63, 167, 160, 0.1);
-    padding: 1px 6px;
+.video-frame video {
+    display: block;
+    width: 100%;
+    max-height: 80vh;
+    background: #000;
 }
 
 /* Page footer nav */
